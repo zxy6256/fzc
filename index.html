@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto" data-fs="md">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf6f0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="福州菜视频菜谱合集：92 道家常闽菜，按分类、主料、做法快速找到要做的菜。">
+<title>福州菜 · 视频菜谱</title>
+<style>
+:root{
+  --bg:#faf6f0; --card:#fffdfa; --ink:#221a14; --muted:#8b7a6b; --line:#e9dfd1;
+  --accent:#bd3a24; --accent-2:#8a2b1b; --soft:#f7e8e1; --chip:#f3ebe0; --shadow:0 1px 2px rgba(70,45,25,.06),0 8px 22px -14px rgba(70,45,25,.28);
+  --radius:16px;
+}
+html[data-theme="dark"]{
+  --bg:#131010; --card:#1c1714; --ink:#f3e9dd; --muted:#a2917f; --line:#2d241d;
+  --accent:#e4643f; --accent-2:#f08a63; --soft:#2a1b15; --chip:#241b16;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 26px -18px rgba(0,0,0,.9);
+}
+@media (prefers-color-scheme: dark){
+  html[data-theme="auto"]{
+    --bg:#131010; --card:#1c1714; --ink:#f3e9dd; --muted:#a2917f; --line:#2d241d;
+    --accent:#e4643f; --accent-2:#f08a63; --soft:#2a1b15; --chip:#241b16;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 26px -18px rgba(0,0,0,.9);
+  }
+  html[data-theme="auto"]{ color-scheme:dark }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  -webkit-tap-highlight-color:transparent; overflow-x:hidden;
+}
+html[data-fs="lg"] body{font-size:18.5px}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+img{display:block}
+
+/* ---------- header ---------- */
+.wrap{max-width:1220px;margin:0 auto;padding:0 clamp(12px,3.4vw,28px)}
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:22px 0 14px}
+header.top>div:first-child{min-width:0}
+h1{margin:0;font-family:"Songti SC","Noto Serif SC",Georgia,"SimSun",serif;font-weight:700;
+   font-size:clamp(21px,5.6vw,33px);letter-spacing:.06em;line-height:1.15;white-space:nowrap}
+h1 em{font-style:normal;font-size:.52em;letter-spacing:.22em;color:var(--muted);margin-left:.5em;vertical-align:.18em}
+h1 .dot{color:var(--accent);margin:0 .12em}
+.stats{margin:7px 0 0;color:var(--muted);font-size:.78rem;letter-spacing:.02em}
+.htools{display:flex;gap:8px;flex:none}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  display:grid;place-items:center;font-size:.82rem;font-weight:600;color:var(--muted);box-shadow:var(--shadow)}
+.icon-btn:active{transform:scale(.96)}
+
+/* ---------- sticky controls ---------- */
+.dock{position:sticky;top:0;z-index:30;padding:8px 0 10px;background:var(--bg);
+  border-bottom:1px solid transparent;transition:border-color .2s}
+.dock.stuck{border-bottom-color:var(--line)}
+.searchrow{display:flex;gap:8px}
+.search{position:relative;flex:1;display:flex;align-items:center;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.search svg{flex:none;margin-left:12px;opacity:.55}
+.search input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;
+  font-size:16px;padding:11px 8px;outline:none}
+.search input::placeholder{color:var(--muted)}
+#qClear{flex:none;width:34px;height:34px;margin-right:4px;border-radius:10px;color:var(--muted);display:none}
+.search.has-q #qClear{display:grid;place-items:center}
+.dice{flex:none;padding:0 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);
+  box-shadow:var(--shadow);color:var(--accent);font-size:.86rem;font-weight:700;letter-spacing:.04em}
+.dice:active{transform:scale(.96)}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none;
+  scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.chips.overflowing{mask-image:linear-gradient(to right,#000 calc(100% - 22px),transparent 100%);
+  -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 22px),transparent 100%)}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);
+  color:var(--muted);font-size:.83rem;font-weight:600;white-space:nowrap;scroll-snap-align:start;
+  transition:.16s}
+.chip b{font-weight:600;opacity:.62;margin-left:.25em;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip[aria-pressed="true"] b{opacity:.8}
+.chip.is-fav[aria-pressed="true"]{background:var(--accent-2);border-color:var(--accent-2)}
+
+/* ---------- recent rail ---------- */
+.rail-wrap{padding:14px 0 4px}
+.rail-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+.rail-head h2{margin:0;font-size:.78rem;font-weight:700;letter-spacing:.12em;color:var(--muted)}
+.rail-head button{font-size:.74rem;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.rail{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.mini{flex:none;width:104px;text-align:left}
+.mini .mt{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--chip);
+  border:1px solid var(--line)}
+.mini img{width:100%;height:100%;object-fit:cover}
+.mini span{display:block;font-size:.72rem;line-height:1.3;margin-top:5px;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- grid ---------- */
+.listhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 10px}
+.count{font-size:.8rem;color:var(--muted)}
+.count b{color:var(--ink);font-variant-numeric:tabular-nums}
+.sortbox{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--muted)}
+.sortbox select{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:10px;padding:5px 26px 5px 10px;font:inherit;font-size:16px;line-height:1.2;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.grid{display:grid;gap:clamp(9px,2.6vw,16px);grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));
+  padding-bottom:8px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow);text-align:left;display:flex;flex-direction:column;
+  transition:transform .16s ease,border-color .16s}
+.card:active{transform:scale(.985)}
+.thumb{position:relative;aspect-ratio:3/4;background:var(--chip);overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+.card:hover .thumb img{transform:scale(1.045)}
+.thumb::after{content:"";position:absolute;inset:auto 0 0 0;height:42%;
+  background:linear-gradient(to top,rgba(0,0,0,.55),transparent)}
+.play-ic{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;
+  background:rgba(255,255,255,.86);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.3);
+  opacity:0;transition:opacity .2s}
+.play-ic svg{margin-left:2px}
+.card:hover .play-ic{opacity:1}
+@media (hover:none){.play-ic{opacity:.92;width:38px;height:38px;margin:-19px 0 0 -19px}}
+.dur{position:absolute;right:8px;bottom:8px;z-index:2;padding:2px 7px;border-radius:7px;
+  background:rgba(14,10,8,.66);color:#fff;font-size:.68rem;font-variant-numeric:tabular-nums;
+  letter-spacing:.02em;backdrop-filter:blur(3px)}
+.badge{position:absolute;left:8px;top:8px;z-index:2;padding:2px 7px;border-radius:7px;font-size:.66rem;
+  font-weight:700;letter-spacing:.04em;background:var(--accent);color:#fff}
+.card .body{padding:9px 11px 11px;display:flex;flex-direction:column;gap:3px}
+.card h3{margin:0;font-size:.94rem;font-weight:650;line-height:1.25;letter-spacing:.01em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .sub{margin:0;font-size:.72rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fav{position:absolute;right:4px;top:4px;z-index:3;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;font-size:1.05rem;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.55);
+  transition:transform .14s}
+.fav:active{transform:scale(.86)}
+.fav[aria-pressed="true"]{color:#ff5a3c}
+.empty{margin:44px auto;max-width:340px;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7}
+.empty b{display:block;color:var(--ink);font-size:1rem;margin-bottom:6px}
+
+footer{margin:28px 0 0;padding:18px 0 calc(26px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line);color:var(--muted);font-size:.74rem;line-height:1.8}
+footer code{background:var(--chip);padding:1px 5px;border-radius:5px;font-size:.92em}
+.totop{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;
+  width:46px;height:46px;border-radius:50%;display:none;place-items:center;font-size:1.15rem;
+  color:var(--accent);background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.totop.on{display:grid}
+.hint{display:flex;gap:9px;align-items:flex-start;margin:14px 0 0;padding:11px 13px;border-radius:12px;
+  background:var(--soft);color:var(--accent-2);font-size:.78rem;line-height:1.55}
+
+/* ---------- player ---------- */
+.player{position:fixed;inset:0;z-index:80;background:#070605;color:#f4ece2;
+  display:flex;flex-direction:column;height:100dvh;overscroll-behavior:contain;
+  padding:max(0px,env(safe-area-inset-top)) 0 max(0px,env(safe-area-inset-bottom))}
+.player[hidden]{display:none}
+.pbar{display:flex;align-items:center;gap:10px;padding:8px 10px;flex:none}
+.pbar .icon-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#fff;
+  box-shadow:none;width:38px;height:38px}
+.ptitle{min-width:0;flex:1}
+.ptitle h2{margin:0;font-size:1rem;font-weight:650;line-height:1.2;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.ptitle p{margin:2px 0 0;font-size:.72rem;color:#b6a696;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pstage{flex:1;min-height:0;display:block;background:#000;overflow:hidden}
+.pstage video{display:block;width:100%;height:100%;max-height:100%;object-fit:contain;background:#000}
+.pfoot{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px 10px 12px}
+.nav{padding:11px 15px;border-radius:12px;background:rgba(255,255,255,.08);color:#fff;
+  border:1px solid rgba(255,255,255,.14);font-size:.82rem;font-weight:600;min-width:88px}
+.nav:disabled{opacity:.35}
+.nav:active{background:rgba(255,255,255,.18)}
+.pacts{display:flex;gap:8px}
+.pacts button{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);color:#e9dfd3;font-size:.78rem;font-variant-numeric:tabular-nums}
+#pfav{font-size:1.05rem}
+#pfav[aria-pressed="true"]{color:#ff6a48}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>福州菜<span class="dot">·</span><em>视频菜谱</em></h1>
+      <p class="stats" id="stats"></p>
+    </div>
+    <div class="htools">
+      <button class="icon-btn" id="fsBtn" title="厨房模式：放大字号" aria-pressed="false">A+</button>
+      <button class="icon-btn" id="themeBtn" title="切换深浅色">◐</button>
+    </div>
+  </header>
+
+  <div class="dock" id="dock">
+    <div class="searchrow">
+      <div class="search" id="searchWrap">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path></svg>
+        <input id="q" type="search" placeholder="搜菜名或主料：糟 / 虾 / 排骨 / 汤" autocomplete="off"
+               enterkeyhint="search" aria-label="搜索菜名或主料">
+        <button id="qClear" aria-label="清空搜索">✕</button>
+      </div>
+      <button class="dice" id="random" title="随机挑一道">随机</button>
+    </div>
+    <nav class="chips" id="chips" aria-label="分类筛选"></nav>
+  </div>
+
+  <div class="hint" id="hint" hidden>
+    <span>💡</span>
+    <span>现在是用 <code>file://</code> 直接打开文件。想用手机看，双击目录里的
+    <code>启动服务.py</code>，再用手机浏览器打开窗口里显示的地址。</span>
+  </div>
+
+  <div class="rail-wrap" id="railWrap" hidden>
+    <div class="rail-head"><h2>最近看过</h2><button id="clearRecent">清空</button></div>
+    <div class="rail" id="rail"></div>
+  </div>
+
+  <div class="listhead">
+    <div class="count" id="count"></div>
+    <label class="sortbox">排序
+      <select id="sort" aria-label="排序方式">
+        <option value="cat">按分类</option>
+        <option value="name">按菜名</option>
+        <option value="dur-">时长：短 → 长</option>
+        <option value="dur+">时长：长 → 短</option>
+      </select>
+    </label>
+  </div>
+
+  <main class="grid" id="grid" aria-live="polite"></main>
+  <div class="empty" id="empty" hidden></div>
+
+  <footer>
+    本地菜谱库 · 全部视频存在 <code>福州菜/</code> 目录 · 封面由视频自动截帧生成<br>
+    生成于 2026-11-12 · 快捷键：<code>/</code> 搜索 · <code>←</code> <code>→</code> 切换上下道 · <code>Esc</code> 关闭播放
+  </footer>
+</div>
+
+<button class="totop" id="totop" aria-label="回到顶部">↑</button>
+
+<div class="player" id="player" hidden role="dialog" aria-modal="true" aria-labelledby="ptitle">
+  <div class="pbar">
+    <button class="icon-btn" id="pClose" aria-label="关闭">✕</button>
+    <div class="ptitle"><h2 id="ptitle">—</h2><p id="psub"></p></div>
+    <button class="icon-btn" id="pfav" aria-label="收藏" aria-pressed="false">♡</button>
+  </div>
+  <div class="pstage"><video id="video" playsinline controls preload="metadata"></video></div>
+  <div class="pfoot">
+    <button class="nav" id="pPrev">‹ 上一道</button>
+    <div class="pacts">
+      <button id="speed" title="播放速度">1×</button>
+      <button id="pip" title="画中画（边做边看）">小窗</button>
+    </div>
+    <button class="nav" id="pNext">下一道 ›</button>
+  </div>
+</div>
+
+<script>
+const DB = {"dishes":[{"id":87,"name":"炸醋肉","file":"炸醋肉.mp4","cat":"闽味招牌","method":"炸","ing":["猪肉"],"dur":58.5,"mb":19.6,"thumb":"thumbs/炸醋肉.jpg"},{"id":82,"name":"盐酒鸡","file":"盐酒鸡.mp4","cat":"闽味招牌","method":"蒸","ing":["鸡","盐","酒"],"dur":110.4,"mb":20.2,"thumb":"thumbs/盐酒鸡.jpg"},{"id":72,"name":"糖酒荷包蛋","file":"糖酒荷包蛋.mp4","cat":"闽味招牌","method":"煮","ing":["蛋","糖","青红酒"],"dur":80.6,"mb":9.3,"thumb":"thumbs/糖酒荷包蛋.jpg"},{"id":84,"name":"糟炒钉螺","file":"糟炒钉螺.mp4","cat":"闽味招牌","method":"炒","ing":["钉螺","红糟"],"dur":42.8,"mb":7.4,"thumb":"thumbs/糟炒钉螺.jpg"},{"id":86,"name":"糟炸排骨","file":"糟炸排骨.mp4","cat":"闽味招牌","method":"炸","ing":["排骨","红糟"],"dur":72.6,"mb":9.6,"thumb":"thumbs/糟炸排骨.jpg"},{"id":85,"name":"糟炸荔枝肉","file":"糟炸荔枝肉.mp4","cat":"闽味招牌","method":"炸","ing":["猪肉","红糟"],"dur":63.1,"mb":14.8,"thumb":"thumbs/糟炸荔枝肉.jpg"},{"id":90,"name":"自制肉松","file":"自制肉松.mp4","cat":"闽味招牌","method":"炒制","ing":["猪肉"],"dur":141.4,"mb":16.5,"thumb":"thumbs/自制肉松.jpg"},{"id":41,"name":"酒糟羊肉","file":"酒糟羊肉.mp4","cat":"闽味招牌","method":"焖","ing":["羊肉","红糟"],"dur":94.3,"mb":11.1,"thumb":"thumbs/酒糟羊肉.jpg"},{"id":91,"name":"醉橄榄","file":"醉橄榄.mp4","cat":"闽味招牌","method":"腌","ing":["橄榄","酒"],"dur":86.2,"mb":8.0,"thumb":"thumbs/醉橄榄.jpg"},{"id":52,"name":"闽式熏鱼","file":"闽式熏鱼.mp4","cat":"闽味招牌","method":"熏·炸","ing":["鱼"],"dur":144.7,"mb":27.2,"thumb":"thumbs/闽式熏鱼.jpg"},{"id":73,"name":"万能开胃汁浸虾","file":"万能开胃汁浸虾.mp4","cat":"海鲜河鲜","method":"浸","ing":["虾"],"dur":71.1,"mb":9.0,"thumb":"thumbs/万能开胃汁浸虾.jpg"},{"id":3,"name":"半酒炖泥鳅","file":"半酒炖泥鳅.mp4","cat":"海鲜河鲜","method":"炖","ing":["泥鳅","半酒"],"dur":82.4,"mb":11.9,"thumb":"thumbs/半酒炖泥鳅.jpg"},{"id":54,"name":"南乳牛蛙煲","file":"南乳牛蛙煲.mp4","cat":"海鲜河鲜","method":"煲","ing":["牛蛙","南乳"],"dur":108.3,"mb":14.0,"thumb":"thumbs/南乳牛蛙煲.jpg"},{"id":34,"name":"家烧豆腐鱼","file":"家烧豆腐鱼.mp4","cat":"海鲜河鲜","method":"烧","ing":["豆腐鱼","豆腐"],"dur":102.8,"mb":11.8,"thumb":"thumbs/家烧豆腐鱼.jpg"},{"id":21,"name":"干煎带鱼","file":"干煎带鱼.mp4","cat":"海鲜河鲜","method":"煎","ing":["带鱼"],"dur":110.5,"mb":25.8,"thumb":"thumbs/干煎带鱼.jpg"},{"id":37,"name":"椒盐蛏","file":"椒盐蛏.mp4","cat":"海鲜河鲜","method":"炸","ing":["蛏"],"dur":98.0,"mb":12.9,"thumb":"thumbs/椒盐蛏.jpg"},{"id":88,"name":"榨菜水电鱼","file":"榨菜水电鱼.mp4","cat":"海鲜河鲜","method":"煮","ing":["水电鱼","榨菜"],"dur":98.8,"mb":23.6,"thumb":"thumbs/榨菜水电鱼.jpg"},{"id":63,"name":"熟醉罗氏虾","file":"熟醉罗氏虾.mp4","cat":"海鲜河鲜","method":"醉","ing":["罗氏虾","酒"],"dur":83.2,"mb":10.8,"thumb":"thumbs/熟醉罗氏虾.jpg"},{"id":27,"name":"红烧鱼块","file":"红烧鱼块.mp4","cat":"海鲜河鲜","method":"烧","ing":["鱼"],"dur":103.3,"mb":13.5,"thumb":"thumbs/红烧鱼块.jpg"},{"id":28,"name":"红烧鱼头","file":"红烧鱼头.mp4","cat":"海鲜河鲜","method":"烧","ing":["鱼头"],"dur":89.3,"mb":16.6,"thumb":"thumbs/红烧鱼头.jpg"},{"id":18,"name":"芙蓉蒸鲈鱼","file":"芙蓉蒸鲈鱼.mp4","cat":"海鲜河鲜","method":"蒸","ing":["鲈鱼","蛋清"],"dur":164.6,"mb":18.2,"thumb":"thumbs/芙蓉蒸鲈鱼.jpg"},{"id":30,"name":"花蛤烧胡瓜","file":"花蛤烧胡瓜.mp4","cat":"海鲜河鲜","method":"烧","ing":["花蛤","胡瓜"],"dur":122.3,"mb":23.0,"thumb":"thumbs/花蛤烧胡瓜.jpg"},{"id":10,"name":"葱油油蛤","file":"葱油油蛤.mp4","cat":"海鲜河鲜","method":"汆·拌","ing":["油蛤","葱油"],"dur":58.5,"mb":8.1,"thumb":"thumbs/葱油油蛤.jpg"},{"id":6,"name":"蛏煎","file":"蛏煎.mp4","cat":"海鲜河鲜","method":"煎","ing":["蛏","蛋","地瓜粉"],"dur":66.2,"mb":6.8,"thumb":"thumbs/蛏煎.jpg"},{"id":39,"name":"金屋藏娇","file":"金屋藏娇.mp4","cat":"海鲜河鲜","method":"包·炸","ing":["蛏","土豆泥"],"dur":94.1,"mb":14.0,"thumb":"thumbs/金屋藏娇.jpg"},{"id":77,"name":"香酥煎鱼","file":"香酥煎鱼.mp4","cat":"海鲜河鲜","method":"煎","ing":["鱼"],"dur":122.9,"mb":59.3,"thumb":"thumbs/香酥煎鱼.jpg"},{"id":20,"name":"干炒牛肉","file":"干炒牛肉.mp4","cat":"猪肉牛肉","method":"炒","ing":["牛肉"],"dur":108.6,"mb":14.0,"thumb":"thumbs/干炒牛肉.jpg"},{"id":38,"name":"椒盐排骨","file":"椒盐排骨.mp4","cat":"猪肉牛肉","method":"炸","ing":["排骨"],"dur":92.2,"mb":17.8,"thumb":"thumbs/椒盐排骨.jpg"},{"id":64,"name":"水煎排骨","file":"水煎排骨.mp4","cat":"猪肉牛肉","method":"水煎","ing":["排骨"],"dur":82.9,"mb":10.1,"thumb":"thumbs/水煎排骨.jpg"},{"id":46,"name":"焖牛排","file":"焖牛排.mp4","cat":"猪肉牛肉","method":"焖","ing":["牛排"],"dur":82.9,"mb":12.4,"thumb":"thumbs/焖牛排.jpg"},{"id":4,"name":"爆炒双脆","file":"爆炒双脆.mp4","cat":"猪肉牛肉","method":"爆炒","ing":["猪腰","鸭胗"],"dur":128.8,"mb":23.0,"thumb":"thumbs/爆炒双脆.jpg"},{"id":56,"name":"牛肉滑","file":"牛肉滑.mp4","cat":"猪肉牛肉","method":"汆","ing":["牛肉","地瓜粉"],"dur":120.3,"mb":13.1,"thumb":"thumbs/牛肉滑.jpg"},{"id":16,"name":"电饭煲炖牛腩","file":"电饭煲炖牛腩.mp4","cat":"猪肉牛肉","method":"电饭煲·炖","ing":["牛腩"],"dur":128.2,"mb":13.7,"thumb":"thumbs/电饭煲炖牛腩.jpg"},{"id":15,"name":"电饭煲炖牛腩 (1)","file":"电饭煲炖牛腩 (1).mp4","cat":"猪肉牛肉","method":"电饭煲·炖","ing":["牛腩"],"dur":128.2,"mb":17.2,"thumb":"thumbs/电饭煲炖牛腩 (1).jpg"},{"id":0,"name":"白菜炒梅花肉","file":"白菜炒梅花肉.mp4","cat":"猪肉牛肉","method":"炒","ing":["白菜","梅花肉"],"dur":129.9,"mb":24.5,"thumb":"thumbs/白菜炒梅花肉.jpg"},{"id":2,"name":"百味烧五花肉","file":"百味烧五花肉.mp4","cat":"猪肉牛肉","method":"烧","ing":["五花肉"],"dur":80.6,"mb":15.4,"thumb":"thumbs/百味烧五花肉.jpg"},{"id":83,"name":"盐香猪脚","file":"盐香猪脚.mp4","cat":"猪肉牛肉","method":"卤","ing":["猪脚"],"dur":99.4,"mb":9.0,"thumb":"thumbs/盐香猪脚.jpg"},{"id":48,"name":"秘制卤肉","file":"秘制卤肉.mp4","cat":"猪肉牛肉","method":"卤","ing":["猪肉"],"dur":86.9,"mb":16.4,"thumb":"thumbs/秘制卤肉.jpg"},{"id":47,"name":"秘制红烧肉","file":"秘制红烧肉.mp4","cat":"猪肉牛肉","method":"烧","ing":["五花肉"],"dur":132.9,"mb":24.1,"thumb":"thumbs/秘制红烧肉.jpg"},{"id":71,"name":"糖醋排骨","file":"糖醋排骨.mp4","cat":"猪肉牛肉","method":"炸·溜","ing":["排骨"],"dur":99.4,"mb":13.4,"thumb":"thumbs/糖醋排骨.jpg"},{"id":24,"name":"罐焖牛肉","file":"罐焖牛肉.mp4","cat":"猪肉牛肉","method":"焖","ing":["牛肉"],"dur":113.2,"mb":19.4,"thumb":"thumbs/罐焖牛肉.jpg"},{"id":12,"name":"脆皮牛肉卷","file":"脆皮牛肉卷.mp4","cat":"猪肉牛肉","method":"炸","ing":["牛肉","春卷皮"],"dur":101.7,"mb":19.9,"thumb":"thumbs/脆皮牛肉卷.jpg"},{"id":70,"name":"蒜香肋排","file":"蒜香肋排.mp4","cat":"猪肉牛肉","method":"烤·炸","ing":["肋排","蒜"],"dur":77.4,"mb":13.1,"thumb":"thumbs/蒜香肋排.jpg"},{"id":50,"name":"蜜汁烤肋排","file":"蜜汁烤肋排.mp4","cat":"猪肉牛肉","method":"烤","ing":["肋排"],"dur":117.9,"mb":16.8,"thumb":"thumbs/蜜汁烤肋排.jpg"},{"id":11,"name":"醋溜里脊","file":"醋溜里脊.mp4","cat":"猪肉牛肉","method":"溜炒","ing":["里脊"],"dur":93.0,"mb":18.2,"thumb":"thumbs/醋溜里脊.jpg"},{"id":60,"name":"青椒炒肉丝","file":"青椒炒肉丝.mp4","cat":"猪肉牛肉","method":"炒","ing":["青椒","肉丝"],"dur":84.7,"mb":9.1,"thumb":"thumbs/青椒炒肉丝.jpg"},{"id":61,"name":"三汁炒鸡","file":"三汁炒鸡.mp4","cat":"鸡鸭","method":"炒","ing":["鸡"],"dur":115.2,"mb":13.4,"thumb":"thumbs/三汁炒鸡.jpg"},{"id":75,"name":"五味鸭","file":"五味鸭.mp4","cat":"鸡鸭","method":"焖","ing":["鸭"],"dur":115.0,"mb":11.6,"thumb":"thumbs/五味鸭.jpg"},{"id":53,"name":"南乳翅中","file":"南乳翅中.mp4","cat":"鸡鸭","method":"炸","ing":["鸡翅","南乳"],"dur":75.5,"mb":12.1,"thumb":"thumbs/南乳翅中.jpg"},{"id":42,"name":"口水鸡","file":"口水鸡.mp4","cat":"鸡鸭","method":"凉拌","ing":["鸡"],"dur":105.4,"mb":16.0,"thumb":"thumbs/口水鸡.jpg"},{"id":14,"name":"电饭煲葱油鸡","file":"电饭煲葱油鸡.mp4","cat":"鸡鸭","method":"电饭煲","ing":["鸡","葱油"],"dur":100.8,"mb":13.1,"thumb":"thumbs/电饭煲葱油鸡.jpg"},{"id":81,"name":"盐葱鸡翅","file":"盐葱鸡翅.mp4","cat":"鸡鸭","method":"烤·煎","ing":["鸡翅","葱"],"dur":80.7,"mb":9.4,"thumb":"thumbs/盐葱鸡翅.jpg"},{"id":9,"name":"葱油手撕鸡","file":"葱油手撕鸡.mp4","cat":"鸡鸭","method":"煮·拌","ing":["鸡","葱油"],"dur":111.0,"mb":14.4,"thumb":"thumbs/葱油手撕鸡.jpg"},{"id":7,"name":"葱烧鸡","file":"葱烧鸡.mp4","cat":"鸡鸭","method":"烧","ing":["鸡","葱"],"dur":114.6,"mb":24.0,"thumb":"thumbs/葱烧鸡.jpg"},{"id":49,"name":"蜜汁鸡腿","file":"蜜汁鸡腿.mp4","cat":"鸡鸭","method":"烤·煎","ing":["鸡腿"],"dur":94.3,"mb":10.0,"thumb":"thumbs/蜜汁鸡腿.jpg"},{"id":35,"name":"酱鸭","file":"酱鸭.mp4","cat":"鸡鸭","method":"卤","ing":["鸭"],"dur":90.8,"mb":16.7,"thumb":"thumbs/酱鸭.jpg"},{"id":68,"name":"酸梅鸭","file":"酸梅鸭.mp4","cat":"鸡鸭","method":"焖","ing":["鸭","酸梅"],"dur":69.6,"mb":22.3,"thumb":"thumbs/酸梅鸭.jpg"},{"id":78,"name":"香酥烤鸡","file":"香酥烤鸡.mp4","cat":"鸡鸭","method":"烤","ing":["鸡"],"dur":92.3,"mb":14.0,"thumb":"thumbs/香酥烤鸡.jpg"},{"id":22,"name":"高压锅干蒸鸭","file":"高压锅干蒸鸭.mp4","cat":"鸡鸭","method":"高压锅·蒸","ing":["鸭"],"dur":93.9,"mb":10.1,"thumb":"thumbs/高压锅干蒸鸭.jpg"},{"id":74,"name":"五白汤","file":"五白汤.mp4","cat":"汤羹","method":"煮","ing":["白萝卜","豆腐","木耳"],"dur":74.8,"mb":10.4,"thumb":"thumbs/五白汤.jpg"},{"id":45,"name":"六物排骨汤","file":"六物排骨汤.mp4","cat":"汤羹","method":"炖","ing":["排骨","六物药材"],"dur":78.5,"mb":10.7,"thumb":"thumbs/六物排骨汤.jpg"},{"id":13,"name":"当归猪肝汤","file":"当归猪肝汤.mp4","cat":"汤羹","method":"炖","ing":["猪肝","当归"],"dur":94.3,"mb":9.2,"thumb":"thumbs/当归猪肝汤.jpg"},{"id":57,"name":"牛肉滑汤","file":"牛肉滑汤.mp4","cat":"汤羹","method":"煮","ing":["牛肉滑"],"dur":108.9,"mb":11.7,"thumb":"thumbs/牛肉滑汤.jpg"},{"id":43,"name":"苦瓜排骨汤","file":"苦瓜排骨汤.mp4","cat":"汤羹","method":"炖","ing":["苦瓜","排骨"],"dur":79.9,"mb":13.1,"thumb":"thumbs/苦瓜排骨汤.jpg"},{"id":80,"name":"蟹白汤","file":"蟹白汤.mp4","cat":"汤羹","method":"煮","ing":["蟹","白菜"],"dur":119.1,"mb":16.1,"thumb":"thumbs/蟹白汤.jpg"},{"id":59,"name":"青橄榄鲍鱼排骨","file":"青橄榄鲍鱼排骨.mp4","cat":"汤羹","method":"炖","ing":["青橄榄","鲍鱼","排骨"],"dur":92.7,"mb":8.4,"thumb":"thumbs/青橄榄鲍鱼排骨.jpg"},{"id":62,"name":"什锦炒米粉","file":"什锦炒米粉.mp4","cat":"面点主食","method":"炒","ing":["米粉","什锦配菜"],"dur":95.1,"mb":17.3,"thumb":"thumbs/什锦炒米粉.jpg"},{"id":79,"name":"小生煎","file":"小生煎.mp4","cat":"面点主食","method":"煎","ing":["猪肉馅","面粉"],"dur":83.0,"mb":11.2,"thumb":"thumbs/小生煎.jpg"},{"id":65,"name":"松露土豆麦饼","file":"松露土豆麦饼.mp4","cat":"面点主食","method":"煎","ing":["土豆","麦粉","松露"],"dur":149.8,"mb":14.5,"thumb":"thumbs/松露土豆麦饼.jpg"},{"id":26,"name":"河虾葱油拌面","file":"河虾葱油拌面.mp4","cat":"面点主食","method":"拌","ing":["河虾","面条","葱油"],"dur":105.0,"mb":28.8,"thumb":"thumbs/河虾葱油拌面.jpg"},{"id":25,"name":"海鲜焖面","file":"海鲜焖面.mp4","cat":"面点主食","method":"焖","ing":["面条","海鲜"],"dur":119.3,"mb":14.4,"thumb":"thumbs/海鲜焖面.jpg"},{"id":23,"name":"灌汤包","file":"灌汤包.mp4","cat":"面点主食","method":"包·蒸","ing":["猪肉馅","皮冻","面粉"],"dur":150.4,"mb":20.0,"thumb":"thumbs/灌汤包.jpg"},{"id":5,"name":"炒泡面","file":"炒泡面.mp4","cat":"面点主食","method":"炒","ing":["泡面","配菜"],"dur":81.1,"mb":13.0,"thumb":"thumbs/炒泡面.jpg"},{"id":55,"name":"牛肉饼","file":"牛肉饼.mp4","cat":"面点主食","method":"煎","ing":["牛肉馅","面粉"],"dur":112.0,"mb":18.7,"thumb":"thumbs/牛肉饼.jpg"},{"id":1,"name":"白菜饺","file":"白菜饺.mp4","cat":"面点主食","method":"包·煮","ing":["白菜","猪肉馅","饺子皮"],"dur":79.7,"mb":10.4,"thumb":"thumbs/白菜饺.jpg"},{"id":89,"name":"紫菜光饼","file":"紫菜光饼.mp4","cat":"面点主食","method":"烤","ing":["面粉","紫菜"],"dur":89.4,"mb":11.4,"thumb":"thumbs/紫菜光饼.jpg"},{"id":8,"name":"葱油酱拌面","file":"葱油酱拌面.mp4","cat":"面点主食","method":"拌","ing":["面条","葱油酱"],"dur":85.3,"mb":20.8,"thumb":"thumbs/葱油酱拌面.jpg"},{"id":66,"name":"酥糯煎饼","file":"酥糯煎饼.mp4","cat":"面点主食","method":"煎","ing":["糯米粉"],"dur":61.7,"mb":10.1,"thumb":"thumbs/酥糯煎饼.jpg"},{"id":58,"name":"青菜牛肉饭","file":"青菜牛肉饭.mp4","cat":"面点主食","method":"焖·炒","ing":["牛肉","青菜","米饭"],"dur":91.9,"mb":10.8,"thumb":"thumbs/青菜牛肉饭.jpg"},{"id":40,"name":"韭菜煎饺","file":"韭菜煎饺.mp4","cat":"面点主食","method":"煎","ing":["韭菜","猪肉馅","饺子皮"],"dur":89.3,"mb":12.1,"thumb":"thumbs/韭菜煎饺.jpg"},{"id":44,"name":"凉拌秋葵","file":"凉拌秋葵.mp4","cat":"素菜家常","method":"凉拌","ing":["秋葵"],"dur":93.3,"mb":23.8,"thumb":"thumbs/凉拌秋葵.jpg"},{"id":33,"name":"家常茄子","file":"家常茄子.mp4","cat":"素菜家常","method":"炒","ing":["茄子"],"dur":92.6,"mb":16.7,"thumb":"thumbs/家常茄子.jpg"},{"id":19,"name":"干煸四季豆","file":"干煸四季豆.mp4","cat":"素菜家常","method":"干煸","ing":["四季豆"],"dur":50.5,"mb":13.2,"thumb":"thumbs/干煸四季豆.jpg"},{"id":36,"name":"椒麻薯片","file":"椒麻薯片.mp4","cat":"素菜家常","method":"炸","ing":["土豆"],"dur":118.8,"mb":26.1,"thumb":"thumbs/椒麻薯片.jpg"},{"id":17,"name":"番茄炒蛋比拼","file":"番茄炒蛋比拼.mp4","cat":"素菜家常","method":"炒","ing":["番茄","蛋"],"dur":139.8,"mb":23.6,"thumb":"thumbs/番茄炒蛋比拼.jpg"},{"id":76,"name":"西红柿炒蛋","file":"西红柿炒蛋.mp4","cat":"素菜家常","method":"炒","ing":["番茄","蛋"],"dur":75.0,"mb":10.7,"thumb":"thumbs/西红柿炒蛋.jpg"},{"id":67,"name":"酸辣土豆丝","file":"酸辣土豆丝.mp4","cat":"素菜家常","method":"炒","ing":["土豆"],"dur":76.2,"mb":10.1,"thumb":"thumbs/酸辣土豆丝.jpg"},{"id":29,"name":"红糖发糕","file":"红糖发糕.mp4","cat":"甜点小吃","method":"蒸","ing":["红糖","面粉"],"dur":117.2,"mb":11.1,"thumb":"thumbs/红糖发糕.jpg"},{"id":31,"name":"花生粉煎","file":"花生粉煎.mp4","cat":"甜点小吃","method":"煎","ing":["糯米","花生"],"dur":55.4,"mb":7.7,"thumb":"thumbs/花生粉煎.jpg"},{"id":32,"name":"花生糖","file":"花生糖.mp4","cat":"甜点小吃","method":"熬制","ing":["花生","糖"],"dur":74.2,"mb":10.8,"thumb":"thumbs/花生糖.jpg"},{"id":51,"name":"蜜汁三白","file":"蜜汁三白.mp4","cat":"甜点小吃","method":"蜜汁","ing":["山药","荸荠","白果"],"dur":76.3,"mb":7.3,"thumb":"thumbs/蜜汁三白.jpg"},{"id":69,"name":"酸奶大麻花","file":"酸奶大麻花.mp4","cat":"甜点小吃","method":"炸","ing":["面粉","酸奶"],"dur":105.0,"mb":12.5,"thumb":"thumbs/酸奶大麻花.jpg"}],"cats":["闽味招牌","海鲜河鲜","猪肉牛肉","鸡鸭","汤羹","面点主食","素菜家常","甜点小吃"],"stats":{"n":92,"minutes":149,"gb":1.4,"built":"2026-11-12"}};
+const DISHES = DB.dishes, CATS = DB.cats, STATS = DB.stats;
+
+const $ = (s, r = document) => r.querySelector(s);
+const grid = $('#grid'), chips = $('#chips'), qEl = $('#q'), player = $('#player'), video = $('#video');
+
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+let favs = new Set(LS.get('fz:fav', []));
+let recent = LS.get('fz:recent', []);
+let state = { q: '', cat: '', favOnly: false, sort: 'cat' };
+
+const fmt = s => { s = Math.round(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const byId = id => DISHES.find(d => d.id === id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const srcOf = d => '福州菜/' + encodeURIComponent(d.file);
+const thumbOf = d => encodeURI(d.thumb);
+
+/* ---------- header stats ---------- */
+$('#stats').textContent = `${STATS.n} 道 · 约 ${Math.floor(STATS.minutes / 60)} 小时 ${STATS.minutes % 60} 分 · ${STATS.gb} GB`;
+
+/* ---------- chips ---------- */
+function buildChips() {
+  const c = [...CATS.map(cat => ({ id: cat, label: cat, n: DISHES.filter(d => d.cat === cat).length })),
+             { id: '__fav', label: '♥ 收藏', n: favs.size, cls: 'is-fav' }];
+  chips.innerHTML = `<button class="chip" data-cat="" aria-pressed="true">全部<b>${DISHES.length}</b></button>` +
+    c.map(x => `<button class="chip ${x.cls || ''}" data-cat="${x.id}" aria-pressed="false">${x.label}<b>${x.n}</b></button>`).join('');
+  syncChipsFade();
+}
+function syncChipsFade() {
+  const c = chips;
+  c.classList.toggle('overflowing', c.scrollWidth - c.clientWidth - c.scrollLeft > 4);
+}
+chips.addEventListener('scroll', syncChipsFade, { passive: true });
+addEventListener('resize', syncChipsFade);
+
+chips.addEventListener('click', e => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  const v = b.dataset.cat;
+  if (v === '__fav') { state.favOnly = !state.favOnly; state.cat = ''; }
+  else { state.cat = v; state.favOnly = false; }
+  [...chips.children].forEach(x => x.setAttribute('aria-pressed', 'false'));
+  b.setAttribute('aria-pressed', 'true');
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ---------- filtering ---------- */
+function visible() {
+  const q = state.q.trim().toLowerCase();
+  let list = DISHES.filter(d => {
+    if (state.cat && d.cat !== state.cat) return false;
+    if (state.favOnly && !favs.has(d.id)) return false;
+    if (!q) return true;
+    return (d.name + ' ' + d.cat + ' ' + d.method + ' ' + d.ing.join(' ')).toLowerCase().includes(q);
+  });
+  const cmpName = (a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN');
+  if (state.sort === 'name') list.sort(cmpName);
+  else if (state.sort === 'dur-') list.sort((a, b) => a.dur - b.dur);
+  else if (state.sort === 'dur+') list.sort((a, b) => b.dur - a.dur);
+  return list;
+}
+
+/* ---------- render ---------- */
+function cardHTML(d) {
+  const isFav = favs.has(d.id);
+  const isDup = /\(1\)$/.test(d.name);
+  return `<article class="card" data-id="${d.id}">
+    <div class="thumb">
+      <img loading="lazy" decoding="async" src="${thumbOf(d)}" alt="${esc(d.name)}">
+      ${isDup ? '<span class="badge">备用版</span>' : ''}
+      <span class="dur">${fmt(d.dur)}</span>
+      <span class="play-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="#c0392b"><path d="M8 5v14l11-7z"/></svg></span>
+    </div>
+    <div class="body">
+      <h3>${esc(d.name.replace(/\s*\(1\)$/, ''))}</h3>
+      <p class="sub">${esc(d.method)} · ${esc(d.ing.slice(0, 2).join(' '))}</p>
+    </div>
+    <button class="fav" data-fav="${d.id}" aria-pressed="${isFav}" aria-label="收藏 ${esc(d.name)}">${isFav ? '♥' : '♡'}</button>
+  </article>`;
+}
+
+function render() {
+  const list = visible();
+  grid.innerHTML = list.map(cardHTML).join('');
+  $('#count').innerHTML = state.q || state.cat || state.favOnly
+    ? `筛选出 <b>${list.length}</b> 道`
+    : `共 <b>${DISHES.length}</b> 道`;
+  const empty = $('#empty');
+  if (!list.length) {
+    empty.hidden = false;
+    empty.innerHTML = state.favOnly
+      ? '<b>还没有收藏的菜</b>点卡片右上角的 ♡ 收藏，做饭时先看它们。'
+      : `<b>没找到「${esc(state.q)}」</b>换个词试试：糟、虾、排骨、汤、面、鸡…`;
+  } else empty.hidden = true;
+  renderRail();
+}
+
+grid.addEventListener('click', e => {
+  const f = e.target.closest('[data-fav]');
+  if (f) { toggleFav(+f.dataset.fav); return; }
+  const c = e.target.closest('.card');
+  if (c) open(+c.dataset.id);
+});
+
+/* ---------- favourites ---------- */
+function toggleFav(id) {
+  favs.has(id) ? favs.delete(id) : favs.add(id);
+  LS.set('fz:fav', [...favs]);
+  document.querySelectorAll(`[data-fav="${id}"]`).forEach(b => {
+    const on = favs.has(id);
+    b.setAttribute('aria-pressed', on); b.textContent = on ? '♥' : '♡';
+  });
+  if (cur && cur.id === id) syncPFav();
+  buildChips(); keepChipPressed();
+  if (state.favOnly) render();
+}
+function keepChipPressed() {
+  const sel = state.favOnly ? '__fav' : (state.cat || '');
+  [...chips.children].forEach(x => x.setAttribute('aria-pressed', String(x.dataset.cat === sel)));
+}
+
+/* ---------- recent ---------- */
+function pushRecent(id) {
+  recent = [id, ...recent.filter(x => x !== id)].slice(0, 8);
+  LS.set('fz:recent', recent);
+}
+function renderRail() {
+  const items = recent.map(byId).filter(Boolean);
+  const wrap = $('#railWrap');
+  wrap.hidden = items.length === 0;
+  if (!items.length) return;
+  $('#rail').innerHTML = items.map(d =>
+    `<button class="mini" data-id="${d.id}">
+       <div class="mt"><img loading="lazy" src="${thumbOf(d)}" alt=""></div>
+       <span>${esc(d.name.replace(/\s*\(1\)$/, ''))}</span>
+     </button>`).join('');
+}
+$('#rail').addEventListener('click', e => {
+  const b = e.target.closest('.mini'); if (b) open(+b.dataset.id);
+});
+$('#clearRecent').addEventListener('click', () => { recent = []; LS.set('fz:recent', []); renderRail(); });
+
+/* ---------- player ---------- */
+let cur = null, curList = [], wakeLock = null, speeds = [1, 1.5, 2, 0.75], sp = 0;
+
+async function grabWakeLock() {
+  try { if ('wakeLock' in navigator && !wakeLock) wakeLock = await navigator.wakeLock.request('screen'); }
+  catch (e) {}
+}
+function dropWakeLock() { if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; } }
+
+function open(id) {
+  const d = byId(id); if (!d) return;
+  curList = visible().length ? visible() : DISHES;
+  const i = curList.findIndex(x => x.id === id);
+  if (i < 0) curList = [...curList, d];
+  cur = d;
+  video.src = srcOf(d);
+  video.poster = thumbOf(d);
+  video.playbackRate = speeds[sp = 0];
+  $('#speed').textContent = '1×';
+  $('#ptitle').textContent = d.name.replace(/\s*\(1\)$/, '');
+  $('#psub').textContent = `${d.cat} · ${d.method} · ${d.ing.join(' / ')} · ${fmt(d.dur)}`;
+  document.title = d.name + ' · 福州菜';
+  syncPFav();
+  player.hidden = false;
+  document.body.style.overflow = 'hidden';
+  video.play().catch(() => {});
+  grabWakeLock();
+  pushRecent(id);
+  syncNav();
+  try { history.replaceState(null, '', '#d=' + d.id); } catch (e) {}
+}
+
+function close() {
+  player.hidden = true;
+  document.body.style.overflow = '';
+  video.pause(); video.removeAttribute('src'); video.load();
+  document.title = '福州菜 · 视频菜谱';
+  dropWakeLock();
+  renderRail();
+  cur = null;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+}
+
+function step(n) {
+  if (!cur) return;
+  const i = curList.findIndex(x => x.id === cur.id);
+  const t = curList[i + n];
+  if (t) open(t.id);
+}
+function syncNav() {
+  const i = curList.findIndex(x => x.id === (cur && cur.id));
+  $('#pPrev').disabled = i <= 0;
+  $('#pNext').disabled = i < 0 || i >= curList.length - 1;
+}
+function syncPFav() {
+  const on = cur && favs.has(cur.id);
+  $('#pfav').setAttribute('aria-pressed', String(!!on));
+  $('#pfav').textContent = on ? '♥' : '♡';
+}
+
+$('#pClose').addEventListener('click', close);
+$('#pPrev').addEventListener('click', () => step(-1));
+$('#pNext').addEventListener('click', () => step(1));
+$('#pfav').addEventListener('click', () => cur && toggleFav(cur.id));
+$('#speed').addEventListener('click', () => {
+  sp = (sp + 1) % speeds.length; video.playbackRate = speeds[sp];
+  $('#speed').textContent = speeds[sp] + '×';
+});
+if (!document.pictureInPictureEnabled) $('#pip').hidden = true;
+$('#pip').addEventListener('click', async () => {
+  try {
+    if (document.pictureInPictureElement) { await document.exitPictureInPicture(); return; }
+    await video.requestPictureInPicture();
+    // 进小窗后收起播放层，但视频继续播（不调 close()，否则会暂停并清掉 src）
+    player.hidden = true;
+    document.body.style.overflow = '';
+    document.title = '福州菜 · 视频菜谱';
+    cur = null;
+    renderRail();
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  } catch (e) {}
+});
+video.addEventListener('leavepictureinpicture', () => {
+  video.pause();
+  if (player.hidden) { video.removeAttribute('src'); video.load(); dropWakeLock(); }
+});
+video.addEventListener('play', grabWakeLock);
+video.addEventListener('pause', dropWakeLock);
+video.addEventListener('error', () => {
+  if (video.getAttribute('src')) $('#psub').textContent = '⚠ 视频读不到：确认 福州菜/ 目录和本页在同一层';
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && !player.hidden && !video.paused) grabWakeLock();
+});
+
+/* ---------- misc controls ---------- */
+$('#random').addEventListener('click', () => {
+  const list = visible().length ? visible() : DISHES;
+  open(list[Math.floor(Math.random() * list.length)].id);
+});
+$('#sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+
+let t = 0;
+qEl.addEventListener('input', () => {
+  $('#searchWrap').classList.toggle('has-q', !!qEl.value);
+  clearTimeout(t);
+  t = setTimeout(() => { state.q = qEl.value; render(); }, 90);
+});
+$('#qClear').addEventListener('click', () => {
+  qEl.value = ''; state.q = '';
+  $('#searchWrap').classList.remove('has-q'); render(); qEl.focus();
+});
+qEl.addEventListener('keydown', e => { if (e.key === 'Enter') qEl.blur(); });
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+    if (e.key === 'Escape') e.target.blur();
+    return;
+  }
+  if (!player.hidden) {
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight') step(1);
+    if (e.key === 'ArrowLeft') step(-1);
+  } else {
+    if (e.key === '/') { e.preventDefault(); qEl.focus(); }
+  }
+});
+
+/* theme */
+const themeBtn = $('#themeBtn');
+const order = ['auto', 'light', 'dark'], tname = { auto: '◐', light: '☀', dark: '☾' };
+function setTheme(v) {
+  document.documentElement.dataset.theme = v;
+  themeBtn.textContent = tname[v];
+  themeBtn.title = '配色：' + ({ auto: '跟随系统', light: '浅色', dark: '深色' })[v];
+  LS.set('fz:theme', v);
+}
+setTheme(LS.get('fz:theme', 'auto'));
+themeBtn.addEventListener('click', () => {
+  const n = order[(order.indexOf(document.documentElement.dataset.theme) + 1) % 3];
+  setTheme(n);
+});
+
+/* kitchen mode */
+const fsBtn = $('#fsBtn');
+function setFs(v) {
+  document.documentElement.dataset.fs = v;
+  fsBtn.setAttribute('aria-pressed', String(v === 'lg'));
+  fsBtn.textContent = v === 'lg' ? 'A-' : 'A+';
+  LS.set('fz:fs', v);
+}
+setFs(LS.get('fz:fs', 'md'));
+fsBtn.addEventListener('click', () => setFs(document.documentElement.dataset.fs === 'lg' ? 'md' : 'lg'));
+
+/* dock shadow on scroll */
+const dock = $('#dock'), toTop = $('#totop');
+addEventListener('scroll', () => {
+  dock.classList.toggle('stuck', scrollY > 8);
+  toTop.classList.toggle('on', scrollY > 700);
+}, { passive: true });
+toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* file:// hint */
+if (location.protocol === 'file:') $('#hint').hidden = false;
+
+buildChips();
+render();
+
+/* 深链：index.html#d=12 直接打开某道菜 */
+function fromHash() {
+  const m = /#d=(\d+)/.exec(location.hash);
+  if (m && byId(+m[1])) open(+m[1]);
+}
+fromHash();
+addEventListener('hashchange', fromHash);
+</script>
+</body>
+</html>
